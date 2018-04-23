@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/influxdata/influxdb/client/v2"
 )
@@ -12,12 +13,14 @@ var (
 	host     *string
 	username *string
 	password *string
+	timeout  *time.Duration
 )
 
 func init() {
 	host = flag.String("host", "http://localhost:8086", "hostname of inlfux server")
 	username = flag.String("u", "", "username for influx auth")
 	password = flag.String("p", "", "password for influx auth")
+	timeout = flag.Duration("timeout", time.Duration(0), "timeout to use for queries, default no timeout")
 	flag.Parse()
 }
 
@@ -32,6 +35,7 @@ func NewSchamaShape() *SchemaShape {
 		Addr:     *host,
 		Username: *username,
 		Password: *password,
+		Timeout:  *timeout,
 	})
 	check(err)
 	return &SchemaShape{
